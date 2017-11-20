@@ -1,8 +1,19 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+	font: 14px "Century Gothic", Futura, sans-serif;
+	margin: 20px;
 }
 
 label {
-  display: block;
+	display: block; 
+	float: left;
+	margin-right: 10px;
+}
+
+#tle1, #tle2 {
+	border: 1px solid black;
+	width: 568px;
+}
+
+canvas {
+	border: 1px solid black;
 }
