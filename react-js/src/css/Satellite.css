@@ -1,0 +1,36 @@
+div.Satellite {
+	border-bottom: 1px solid #95A5A6;
+	height: 80px;
+	padding: 10px;
+}
+
+div.Satellite img {
+	float: left;
+	border-radius: 5px;
+	margin-right: 20px;
+}
+
+div.Satellite div {
+	float: left;
+}
+
+div.Satellite div h3 {
+	color: black;
+	font-weight: bold;
+	margin: 0px;
+
+}
+
+div.Satellite canvas {
+	float: right;
+	margin: 0px;
+}
+
+@media (orientation:portrait) {
+    div.Satellite div span span.height {
+        display: none;
+    }
+    div.Satellite canvas {
+        display: none;
+    }
+}

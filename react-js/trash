@@ -1,0 +1,29 @@
+class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.handleTextboxBlur = this.handleTextboxBlur.bind(this); 
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.state = { tle1: '1 25544U 98067A   17323.83488426  .00003772  00000-0  64076-4 0  9995', 
+                   tle2: '2 25544  51.6413 342.3930 0004362 132.3714 214.5425 15.54187097 85959' };
+  }
+
+  handleTextboxBlur(event) {
+    this.setState({ [event.target.id]: event.target.value });
+  }
+
+  handleButtonClick(event) {
+    this.setState({ tle1: this.state.tle1, 
+                    tle2: this.state.tle2 });
+  }
+
+---------------------------
+
+    var longWE = "E";
+    if (long < 0) 
+    {
+      longWE = "W";
+      long *= -1;
+    }
+
+

@@ -1,0 +1,24 @@
+div.GroundStation {
+	border-bottom: 1px solid #95A5A6;
+	height: 80px;
+	padding: 10px;
+}
+
+div.GroundStation img {
+	float: left;
+	border-radius: 5px;
+	margin-right: 20px;
+}
+
+div.GroundStation h3 {
+	color: black;
+	font-weight: bold;
+	margin: 0px;
+}
+
+@media (orientation:portrait) {
+    div.GroundStation div span span.height {
+        display: none;
+    }
+    
+}

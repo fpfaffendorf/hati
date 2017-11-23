@@ -1,0 +1,13 @@
+div.Footer {
+	height: 20px;
+	padding: 10px;
+	border-bottom: 1px solid #BDC3C7;
+}
+
+div.Footer h3 {
+	color: white;
+	font-weight: normal;
+	margin: 0px;
+	padding: 0px;
+	float: right;
+}
