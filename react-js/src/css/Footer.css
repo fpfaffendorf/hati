@@ -1,7 +1,7 @@
 div.Footer {
-	height: 20px;
+	height: 10px;
 	padding: 10px;
-	border-bottom: 1px solid #BDC3C7;
+	border: 0px;
 }
 
 div.Footer h3 {
@@ -10,4 +10,5 @@ div.Footer h3 {
 	margin: 0px;
 	padding: 0px;
 	float: right;
+	font-size: 10px;
 }

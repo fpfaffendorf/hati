@@ -13,7 +13,9 @@ class Satellite extends React.Component {
     super(props);
     this.state = { lat: 0, 
                    long: 0,
-                   height: 0 };
+                   height: 0,
+                   windowStatus: 'min' };
+    this.bodyClick = this.bodyClick.bind(this); 
   }
 
   computeGeodeticPosition() 
@@ -64,9 +66,14 @@ class Satellite extends React.Component {
     image.src = "./world-equirectangular.jpg"; 
   }
 
+  bodyClick() {
+    if (this.state.windowStatus === 'min') this.setState({windowStatus: 'max'});
+    else this.setState({windowStatus: 'min'});
+  }
+
   render() {
     return (
-        <div id={this.props.id} className="Satellite">
+        <div id={this.props.id} className={'Satellite ' + (this.state.windowStatus === 'max' ? 'maximized' : '') } style={{display: this.props.visible ? 'block' : 'none'}} onClick={this.bodyClick}>
           <img src="./cube-sat-ico.png" alt={this.props.name} style={ {backgroundColor: this.props.color} } width="60" height="60" />
           <div>
             <h3>{this.props.name}</h3>
@@ -85,7 +92,6 @@ class Satellite extends React.Component {
     this.interval = setInterval(this.updateGeodeticPosition.bind(this), 5000);
     this.interval = setInterval(this.renderWorldMapImageOnCanvas.bind(this), 5000);
   }
-
 
 }
 

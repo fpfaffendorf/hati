@@ -7,8 +7,8 @@ class Functions {
       latNS = "S";
       lat *= -1;
     }
-    var latDeg = parseInt(lat);    
-    var latMin = parseInt((lat - latDeg) * 60);    
+    var latDeg = parseInt(lat, 10);    
+    var latMin = parseInt((lat - latDeg) * 60, 10);    
     return latDeg + "°" + latMin + "'" + latNS;
   }
 
@@ -19,8 +19,8 @@ class Functions {
       longEW = "W";
       long *= -1;
     }
-    var longDeg = parseInt(long);    
-    var longMin = parseInt((long - longDeg) * 60);    
+    var longDeg = parseInt(long, 10);    
+    var longMin = parseInt((long - longDeg) * 60, 10);    
     return longDeg + "°" + longMin + "'" + longEW;
   }
 

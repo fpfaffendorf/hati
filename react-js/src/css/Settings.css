@@ -1,0 +1,15 @@
+div.Settings {
+	border-bottom: 1px solid #95A5A6;
+	padding: 10px;
+	background: #FFFFFF;
+	display: flex;
+}
+
+div.Settings.hide {
+	display: none;
+}
+
+div.Settings textarea
+{
+	border: 1px solid black;
+}
