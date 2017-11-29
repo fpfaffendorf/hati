@@ -1,5 +1,6 @@
 import React from 'react';
 import satellite from 'satellite.js';
+import moment from 'moment';
 
 import Functions from './Functions.js';
 
@@ -14,83 +15,116 @@ class Satellite extends React.Component {
     this.state = { lat: 0, 
                    long: 0,
                    height: 0,
+                   canvasBackground: 'url(./worldmap.png)',
+                   canvasStatus: 'min',
+                   canvasWidth: 180,
+                   canvasHeight: 90,
                    windowStatus: 'min' };
+    this.computeGeodeticPosition = this.computeGeodeticPosition.bind(this); 
+    this.renderSatellitePathAndPosition = this.renderSatellitePathAndPosition.bind(this); 
     this.bodyClick = this.bodyClick.bind(this); 
+    this.canvasClick = this.canvasClick.bind(this); 
   }
 
-  computeGeodeticPosition() 
+  computeGeodeticPosition(date) 
   {
-    var lat = 0;
-    var long = 0;
-    var height = 0;
     if ((typeof this.props.tle1 !== 'undefined') && (typeof this.props.tle2 !== 'undefined'))
     {
-      var date = new Date();
       var satrec = satellite.twoline2satrec(this.props.tle1, this.props.tle2);
       var positionAndVelocity = satellite.propagate(satrec, date);
       var positionEci = positionAndVelocity.position;
       var gmst = satellite.gstimeFromDate(date);
       var positionGd = satellite.eciToGeodetic(positionEci, gmst);
-      lat = satellite.degreesLat(positionGd.latitude);
-      long = satellite.degreesLong(positionGd.longitude);
-      height = positionGd.height;
-    }
-    return ({ lat: lat, 
-              long: long,
-              height: height });      
-  }
+      return ({ lat: satellite.degreesLat(positionGd.latitude), 
+                long: satellite.degreesLong(positionGd.longitude),
+                height: positionGd.height });      
+    }    
+  }  
 
-  updateGeodeticPosition()
+  renderSatellitePathAndPosition() 
   {
-    var gp = this.computeGeodeticPosition();
-    this.setState({lat: gp.lat, 
-                   long: gp.long, 
-                   height: gp.height});
-  }
-
-  renderWorldMapImageOnCanvas() {
     var canvas = document.getElementById("map_" + this.props.id);
     var context = canvas.getContext("2d");
-    var image = new Image();
     var thisComponent = this;
-    context.beginPath();    
-    image.onload = function() {
-      context.drawImage(this, 0, 0, 140, 74);
-      context.rect(70 + (70 * thisComponent.state.long / 180) - 2,
-                   37 - (37 * thisComponent.state.lat / 90) - 2, 
-                   4, 
-                   4);
-      context.fillStyle = thisComponent.props.color;
-      context.fill();
-    };
-    image.src = "./world-equirectangular.jpg"; 
+    var canvasWidth = thisComponent.state.canvasWidth;
+    var canvasHeight = thisComponent.state.canvasHeight;
+    var halfCanvasWidth = canvasWidth / 2;
+    var halfCanvasHeight = canvasHeight / 2;
+    var satelliteWidth = thisComponent.state.canvasWidth * 4 / 140;
+    var halfSatelliteWidth = satelliteWidth / 2;
+    var firstLoop = true;
+    var lastLong = 0;
+    context.beginPath();
+    context.clearRect(0, 0, canvas.width, canvas.height);    
+    for (var minutes = -10; minutes <= 4 * 60; minutes++)
+    {
+      var positionGd = thisComponent.computeGeodeticPosition(moment().add(minutes, 'minutes').toDate());
+      if ((firstLoop) || (positionGd.long < lastLong))
+      {
+        context.moveTo(halfCanvasWidth + (halfCanvasWidth * positionGd.long / 180),
+                     halfCanvasHeight - (halfCanvasHeight * positionGd.lat / 90));
+        firstLoop = false;
+      }
+      context.lineTo(halfCanvasWidth + (halfCanvasWidth * positionGd.long / 180),
+                     halfCanvasHeight - (halfCanvasHeight * positionGd.lat / 90));
+      if (minutes === -2) {
+        minutes = 1;
+        firstLoop = true;
+      }
+      lastLong = positionGd.long;
+    }
+    var imageSat = new Image();
+    imageSat.onload = function() {
+      thisComponent.setState (thisComponent.computeGeodeticPosition(new Date()));
+      context.drawImage(this, 
+                        halfCanvasWidth + (halfCanvasWidth * thisComponent.state.long / 180) - halfSatelliteWidth, 
+                        halfCanvasHeight - (halfCanvasHeight * thisComponent.state.lat / 90) - halfSatelliteWidth, 
+                        satelliteWidth, 
+                        satelliteWidth);
+      context.strokeStyle = thisComponent.props.color;
+      context.lineWidth = thisComponent.state.canvasStatus === 'min' ? 1 : 2;
+      context.stroke();
+    }
+    imageSat.src = "./cube-sat-ico.png";
   }
 
-  bodyClick() {
+  bodyClick(event) {
     if (this.state.windowStatus === 'min') this.setState({windowStatus: 'max'});
     else this.setState({windowStatus: 'min'});
+    this.renderSatellitePathAndPosition();
+    event.stopPropagation();
+  }
+
+  canvasClick(event) {
+    if (this.state.canvasStatus === 'min') this.setState({canvasStatus: 'max', canvasWidth: 2000, canvasHeight: 1000});
+    else this.setState({canvasStatus: 'min', canvasWidth: 180, canvasHeight: 90});
+    setTimeout(this.renderSatellitePathAndPosition, 10);
+    event.stopPropagation();
   }
 
   render() {
     return (
         <div id={this.props.id} className={'Satellite ' + (this.state.windowStatus === 'max' ? 'maximized' : '') } style={{display: this.props.visible ? 'block' : 'none'}} onClick={this.bodyClick}>
-          <img src="./cube-sat-ico.png" alt={this.props.name} style={ {backgroundColor: this.props.color} } width="60" height="60" />
-          <div>
+          <div className="header">
             <h3>{this.props.name}</h3>
             <i>{this.props.description}</i><br />
             <span>Next Station: -</span><br />
-            <span>Lat: {Functions.humanReadableLatitude(this.state.lat)} | Long: {Functions.humanReadableLongitude(this.state.long)} <span className="height">| Height: {Math.ceil(this.state.height) + "Km."}</span></span>
+            <span>
+              Lat {Functions.humanReadableLatitude(this.state.lat)} | Long {Functions.humanReadableLongitude(this.state.long)}
+              <span class="alt"> | Alt {Math.ceil(this.state.height) + "Km."}</span>
+            </span>
           </div>
-          <canvas id={"map_" + this.props.id} width="140" height="74"></canvas>
+          <canvas id={"map_" + this.props.id} className={'WorldMap ' + (this.state.canvasStatus === 'max' ? 'maximized' : '')} width={this.state.canvasWidth} height={this.state.canvasHeight} style={{background: this.state.canvasBackground, backgroundSize: '100% 100%'}} onClick={this.canvasClick}></canvas>
+          <div className="extended">
+            <b>Next Passes (24Hs.)</b>
+          </div>
         </div>  
-      );
+    );
   }
 
   componentDidMount() {
-    this.updateGeodeticPosition();
-    this.renderWorldMapImageOnCanvas();
-    this.interval = setInterval(this.updateGeodeticPosition.bind(this), 5000);
-    this.interval = setInterval(this.renderWorldMapImageOnCanvas.bind(this), 5000);
+    this.renderSatellitePathAndPosition();
+    this.interval = setInterval(this.renderSatellitePathAndPosition, 10000);
   }
 
 }

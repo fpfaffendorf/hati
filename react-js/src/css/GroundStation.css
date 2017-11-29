@@ -6,7 +6,7 @@ div.GroundStation {
 }
 
 div.GroundStation.maximized {
-	display: block;
+	box-sizing: border-box;
 	position: fixed; 
    	margin: 0px;
    	padding: 20px;
@@ -22,6 +22,8 @@ div.GroundStation img {
 	float: left;
 	border-radius: 5px;
 	margin-right: 20px;
+	width: 55px;
+	height: 55px;
 }
 
 div.GroundStation h3 {
