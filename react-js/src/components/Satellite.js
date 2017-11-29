@@ -111,7 +111,7 @@ class Satellite extends React.Component {
             <span>Next Station: -</span><br />
             <span>
               Lat {Functions.humanReadableLatitude(this.state.lat)} | Long {Functions.humanReadableLongitude(this.state.long)}
-              <span class="alt"> | Alt {Math.ceil(this.state.height) + "Km."}</span>
+              <span className="alt"> | Alt {Math.ceil(this.state.height) + "Km."}</span>
             </span>
           </div>
           <canvas id={"map_" + this.props.id} className={'WorldMap ' + (this.state.canvasStatus === 'max' ? 'maximized' : '')} width={this.state.canvasWidth} height={this.state.canvasHeight} style={{background: this.state.canvasBackground, backgroundSize: '100% 100%'}} onClick={this.canvasClick}></canvas>

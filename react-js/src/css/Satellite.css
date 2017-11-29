@@ -54,6 +54,14 @@ div.Satellite canvas.WorldMap.maximized {
 	border-radius: 0px;
 }
 
+div.Satellite div.extended {
+	display: none;
+}
+
+div.Satellite.maximized div.extended {
+	display: block;
+	clear: both;
+	padding-top: 20px;
 }
 
 @media (orientation:portrait) {
