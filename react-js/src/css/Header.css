@@ -1,6 +1,7 @@
 div.Header {
-	height: 30px;
+	height: 28px;
 	padding: 10px;
+	padding-top: 14px;
 	border-bottom: 1px solid #BDC3C7;
 }
 
@@ -23,7 +24,8 @@ div.Header h2 span {
 	text-align: center;
 	font-size: 20px;
 	font-weight: bold;
-
+	position: relative;
+	top: -3px;
 }
 
 div.Header h2 span span {

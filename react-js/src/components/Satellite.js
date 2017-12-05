@@ -12,9 +12,11 @@ class Satellite extends React.Component {
 
   constructor(props) {
     super(props);
+    this.canvas = null;
     this.state = { lat: 0, 
                    long: 0,
                    height: 0,
+                   velocity: 0,
                    canvasBackground: 'url(./worldmap.png)',
                    canvasStatus: 'min',
                    canvasWidth: 180,
@@ -35,16 +37,17 @@ class Satellite extends React.Component {
       var positionEci = positionAndVelocity.position;
       var gmst = satellite.gstimeFromDate(date);
       var positionGd = satellite.eciToGeodetic(positionEci, gmst);
+      var velocity = Math.sqrt(Math.pow(positionAndVelocity.velocity.x, 2) + Math.pow(positionAndVelocity.velocity.y, 2) + Math.pow(positionAndVelocity.velocity.z, 2));
       return ({ lat: satellite.degreesLat(positionGd.latitude), 
                 long: satellite.degreesLong(positionGd.longitude),
-                height: positionGd.height });      
+                height: positionGd.height,
+                velocity: velocity});      
     }    
   }  
 
   renderSatellitePathAndPosition() 
   {
-    var canvas = document.getElementById("map_" + this.props.id);
-    var context = canvas.getContext("2d");
+    var context = this.canvas.getContext("2d");
     var thisComponent = this;
     var canvasWidth = thisComponent.state.canvasWidth;
     var canvasHeight = thisComponent.state.canvasHeight;
@@ -55,7 +58,7 @@ class Satellite extends React.Component {
     var firstLoop = true;
     var lastLong = 0;
     context.beginPath();
-    context.clearRect(0, 0, canvas.width, canvas.height);    
+    context.clearRect(0, 0, this.canvas.width, this.canvas.height);    
     for (var minutes = -10; minutes <= 4 * 60; minutes++)
     {
       var positionGd = thisComponent.computeGeodeticPosition(moment().add(minutes, 'minutes').toDate());
@@ -110,13 +113,42 @@ class Satellite extends React.Component {
             <i>{this.props.description}</i><br />
             <span>Next Station: -</span><br />
             <span>
-              Lat {Functions.humanReadableLatitude(this.state.lat)} | Long {Functions.humanReadableLongitude(this.state.long)}
-              <span className="alt"> | Alt {Math.ceil(this.state.height) + "Km."}</span>
+              Lat {Functions.humanReadableLatitude(this.state.lat)} | Long {Functions.humanReadableLongitude(this.state.long)}<br />
+              Alt {Math.ceil(this.state.height) + " Km"} | Vel { this.state.velocity.toFixed(2) + " Km/s"}
             </span>
           </div>
-          <canvas id={"map_" + this.props.id} className={'WorldMap ' + (this.state.canvasStatus === 'max' ? 'maximized' : '')} width={this.state.canvasWidth} height={this.state.canvasHeight} style={{background: this.state.canvasBackground, backgroundSize: '100% 100%'}} onClick={this.canvasClick}></canvas>
+          <canvas id={"map_" + this.props.id} ref={(input) => { this.canvas = input; }} className={'WorldMap ' + (this.state.canvasStatus === 'max' ? 'maximized' : '')} width={this.state.canvasWidth} height={this.state.canvasHeight} style={{background: this.state.canvasBackground, backgroundSize: '100% 100%'}} onClick={this.canvasClick}></canvas>
           <div className="extended">
             <b>Next Passes (24Hs.)</b>
+            
+            <table>
+              <thead>
+                <tr>
+                  <th>11/29/2017</th>
+                  <th>Wilde, Avellaneda</th>
+                </tr>
+              </thead>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>GS</th>
+                  <th>Rise</th>
+                  <th colSpan="2">Transit</th>
+                  <th>Set</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>5:06PM</td>
+                  <td>5:06PM</td>
+                  <td>34&deg;</td>
+                  <td>5:06PM</td>
+                </tr>
+              </tbody>
+            </table>
+
           </div>
         </div>  
     );

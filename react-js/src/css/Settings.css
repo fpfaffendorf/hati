@@ -2,14 +2,24 @@ div.Settings {
 	border-bottom: 1px solid #95A5A6;
 	padding: 10px;
 	background: #FFFFFF;
-	display: flex;
+}
+
+div.Settings h3
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+div.Settings div input
+{
+	box-sizing: border-box;
+	border: 1px solid #7F8C8D;
+	width: 100%;
+	padding: 5px;
+	clear: both;
+	border-radius: 3px;	
 }
 
 div.Settings.hide {
 	display: none;
-}
-
-div.Settings textarea
-{
-	border: 1px solid black;
 }
