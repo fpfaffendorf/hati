@@ -65,7 +65,7 @@ class App extends React.Component {
             <GroundStation id="groundStation1" visible={this.state.groundStationsVisible} name="Wilde, Avellaneda" description="Ground Station Wilde" lat="-34.701747" long="-58.3205107" height="0.5" color="#8E44AD" />
           <Header id="headerCommands" title="Commands" background="#3498DB" actionIcon="plus" />
           <Header id="headerParameters" title="Parameters" background="#3498DB" actionIcon="plus" />
-          <Footer id="footer0" title="hati.space 2017 | mobile satellite mission control - v0.0.6" background="#2C3E50" />
+          <Footer id="footer0" title="&copy; 2017 hati.space | mobile satellite mission control - v0.0.6" background="#2C3E50" />
         </div>
       );
   }
